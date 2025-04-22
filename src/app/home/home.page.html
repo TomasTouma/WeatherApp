@@ -1,17 +1,23 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      WeatherApp
-    </ion-title>
+    <ion-title>WeatherApp</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+    [(ngModel)]="searchTerm"
+    (keyup.enter)="searchCity()"
+    (ionClear)="searchTerm = ''"
+    placeholder="Search city..."
+    debounce="500">
+  </ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-card
     *ngFor="let city of cities"
-    [routerLink]="city.path"
-    button="true"
-    style="text-align: center;"
+    (click)="searchCityFromCard(city.name)"
+    style="text-align: center; cursor: pointer;"
   >
     <img [src]="city.image" />
     <ion-card-header>
