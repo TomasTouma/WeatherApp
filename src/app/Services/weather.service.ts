@@ -11,10 +11,17 @@ export class WeatherService {
 
   constructor(private httpClient:HttpClient) { }
 
-  //method to get the weather from the URL
-  getWeather(cityName: string): Observable<any> {
+  //method to get the weather from the URL by a city name
+  getCityWeather(cityName: string): Observable<any> {
     return this.httpClient.get(
       `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&APPID=a09447c5acff6dac8f3dfca1fc14e912`);
+      
+  }
+
+  //method to get the weather from the URL by location
+  getLocationWeather(lat: number, long: number): Observable<any> {
+    return this.httpClient.get(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=a09447c5acff6dac8f3dfca1fc14e912`);
       
   }
 

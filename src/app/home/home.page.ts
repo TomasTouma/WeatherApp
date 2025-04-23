@@ -1,21 +1,25 @@
 import { Component, inject  } from '@angular/core';
-import {IonSearchbar, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import {IonButton, IonSearchbar, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import {RouterLink} from '@angular/router'
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { WeatherService } from '../Services/weather.service';
 import { Router } from '@angular/router';
+import {Geolocation} from '@capacitor/geolocation'
 
 @Component({
   standalone: true,
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [ IonSearchbar, FormsModule, CommonModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, RouterLink, IonHeader, IonToolbar, IonTitle, IonContent],
+  imports: [IonButton, IonSearchbar, FormsModule, CommonModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, RouterLink, IonHeader, IonToolbar, IonTitle, IonContent],
 })
 export class HomePage {
 
   searchTerm = '';
+  location: any ="";
+  lat: number = 0;
+  long: number = 0;
   private router = inject(Router);
   cities = [
     {
@@ -65,6 +69,16 @@ export class HomePage {
     this.router.navigate(['/weather-result'], {
       state: { cityName: cityName }
     });
+  }
+
+  async getLocation(){
+    this.location =await Geolocation.getCurrentPosition();
+    this.lat = this.location.coords.latitude;
+    this.long = this.location.coords.longitude;
+    this.router.navigate(['/weather-location'], {
+      state: { lat: this.lat, long:this.long }
+    });
+    
   }
 
 }

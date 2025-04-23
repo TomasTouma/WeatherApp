@@ -6,26 +6,27 @@ import { IonButtons,IonBackButton,IonCard,IonCardHeader,IonCardTitle,IonCardSubt
 import { WeatherService } from '../Services/weather.service';
 
 @Component({
-  selector: 'app-weather-result',
-  templateUrl: './weather-result.page.html',
-  styleUrls: ['./weather-result.page.scss'],
+  selector: 'app-weather-location',
+  templateUrl: './weather-location.page.html',
+  styleUrls: ['./weather-location.page.scss'],
   standalone: true,
   imports: [IonButtons, IonBackButton, IonCard,IonCardHeader,IonCardTitle,IonCardSubtitle,IonCardContent, IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
 })
-export class WeatherResultPage implements OnInit {
-  
+export class WeatherLocationPage implements OnInit {
+
   weatherData: any = null;
   error: string | null = null;
-  cityName: string = '';
-
+  lat: number = 0;
+  long: number = 0;
   constructor(private router: Router, private weatherService: WeatherService) {
     const nav = this.router.getCurrentNavigation();
-    this.cityName = nav?.extras.state?.['cityName'] || '';
+    this.lat = nav?.extras.state?.['lat'] || '';
+    this.long = nav?.extras.state?.['long'] || '';
   }
 
   ngOnInit(): void {
-    if (this.cityName) {
-      this.weatherService.getCityWeather(this.cityName).subscribe({
+    if (this.lat && this.long) {
+      this.weatherService.getLocationWeather(this.lat, this.long).subscribe({
         next: (data) => {
           this.weatherData = data;
           this.error = null;
