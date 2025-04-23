@@ -1,26 +1,34 @@
 import { Component, inject  } from '@angular/core';
-import {IonButton, IonSearchbar, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import {IonText,IonButton, IonSearchbar, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
 import {RouterLink} from '@angular/router'
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { WeatherService } from '../Services/weather.service';
+import { WeatherService } from '../Services/weather.service';//weather service import 
 import { Router } from '@angular/router';
-import {Geolocation} from '@capacitor/geolocation'
+import {Geolocation} from '@capacitor/geolocation'//geolocation import
+import { Storage } from '@ionic/storage-angular';//storage import
+
 
 @Component({
   standalone: true,
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  imports: [IonButton, IonSearchbar, FormsModule, CommonModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, RouterLink, IonHeader, IonToolbar, IonTitle, IonContent],
+  imports: [IonText, IonButton, IonSearchbar, FormsModule, CommonModule, IonCard, IonCardContent, IonCardHeader, IonCardTitle, RouterLink, IonHeader, IonToolbar, IonTitle, IonContent],
 })
 export class HomePage {
 
-  searchTerm = '';
-  location: any ="";
-  lat: number = 0;
-  long: number = 0;
+  latestSearch:string = "";//store the latest city search
+  searchTerm = '';//store the city name typed into the search bar
+  
+  location: any ="";//store the whole location
+  lat: number = 0;//store the extracted latitude
+  long: number = 0;//store the extracted longitude
+
+  // Inject router using standalone-style `inject()` pattern
   private router = inject(Router);
+
+  //array of cities that are shown in the cards
   cities = [
     {
       name: 'Athlone',
@@ -56,21 +64,29 @@ export class HomePage {
     },
   ];
 
-  constructor(private weatherService: WeatherService) {}
+  constructor(private weatherService: WeatherService, private storage:Storage) {}
   
-  
+  // Loads the last searched city from local storage
+  async ionViewWillEnter(){
+    await this.storage.create();
+    this.latestSearch = await this.storage.get('search');
+    }
+
+  // Navigates to the weather result page and passes the typed city
   searchCity() {
     this.router.navigate(['/weather-result'], {
       state: { cityName: this.searchTerm }
     });
   }
 
+  // Sends that city to the weather result page
   searchCityFromCard(cityName: string) {
     this.router.navigate(['/weather-result'], {
       state: { cityName: cityName }
     });
   }
 
+  //called when use my location button is clicked, gets the user's geolocation and navigates to the location weather page
   async getLocation(){
     this.location =await Geolocation.getCurrentPosition();
     this.lat = this.location.coords.latitude;

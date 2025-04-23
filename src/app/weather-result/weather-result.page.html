@@ -8,21 +8,27 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <!-- Weather card: only shows if weather data exists -->
   <ion-card *ngIf="weatherData?.weather">
     <ion-card-header>
+
       <ion-card-title>{{ weatherData.name }}, {{ weatherData.sys.country }}</ion-card-title>
+
       <ion-card-subtitle>
         {{ weatherData.weather[0].main }} - {{ weatherData.weather[0].description }}
       </ion-card-subtitle>
+
     </ion-card-header>
 
     <ion-card-content class="ion-text-center">
+      <!-- Weather icon from OpenWeatherMap -->
       <img
         [src]="'https://openweathermap.org/img/wn/' + weatherData.weather[0].icon + '@2x.png'"
         alt="weather icon"
         style="width: 100px; height: 100px;"
       />
 
+      <!-- Weather details -->
       <p><strong>🌡 Temp:</strong> {{ (weatherData.main.temp - 273.15) | number:'1.0-1' }} °C</p>
       <p><strong>🤗 Feels Like:</strong> {{ (weatherData.main.feels_like - 273.15) | number:'1.0-1' }} °C</p>
       <p><strong>💧 Humidity:</strong> {{ weatherData.main.humidity }}%</p>
@@ -31,6 +37,7 @@
     </ion-card-content>
   </ion-card>
 
+  <!-- Error card: shows when no valid weather data is returned -->
   <ion-card *ngIf="!weatherData || weatherData.cod !== 200">
     <ion-card-header>
       <ion-card-title>❌ Error</ion-card-title>

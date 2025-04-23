@@ -14,26 +14,31 @@ import { WeatherService } from '../Services/weather.service';
 })
 export class WeatherLocationPage implements OnInit {
 
+  // Store weather data and errors
   weatherData: any = null;
   error: string | null = null;
+
+  // Coordinates received via router navigation
   lat: number = 0;
   long: number = 0;
   constructor(private router: Router, private weatherService: WeatherService) {
+    // Retrieve latitude and longitude from navigation state
     const nav = this.router.getCurrentNavigation();
     this.lat = nav?.extras.state?.['lat'] || '';
     this.long = nav?.extras.state?.['long'] || '';
   }
 
   ngOnInit(): void {
+    // If valid coordinates are received, fetch weather info
     if (this.lat && this.long) {
       this.weatherService.getLocationWeather(this.lat, this.long).subscribe({
         next: (data) => {
-          this.weatherData = data;
-          this.error = null;
+          this.weatherData = data;// Save response to display
+          this.error = null;// Clear error if successful
         },
         error: (err) => {
-          this.error = err.error?.message || 'An error occurred';
-          this.weatherData = null;
+          this.error = err.error?.message || 'An error occurred';// Save any error message
+          this.weatherData = null;// Clear previous data
         }
         
       });
